@@ -7569,14 +7569,25 @@
 		    padding: 10px 17px;
 		}
 
-		.filter-container{
-			border: 2px solid #33CCCC;
-			border-radius: 24px;
-			overflow-x:auto;
-			background-color: #FFFFFF;
+		.filter-container{	
+			background-color: #fcfcfc;
 			box-shadow: 0 2px 4px 0 #DDDDDD;
+            position: relative;
+            border: 1px solid #f2f2f2;
 			
 		}
+        .toggle-filter-test {
+            width: 100%;
+            display: block;
+            background: none;
+            z-index: 1;
+            position: absolute;
+            height: 40px;
+            left: 0px;
+            top: 0px;
+            cursor:pointer;
+            box-shadow: 0 6px 16px -5px rgba(34,34,34,.3);
+        }
 
 		.below-filter{
 			margin-top: 0px;
@@ -7659,8 +7670,67 @@
             display:none;
         }
 
+        .btn-expiry img {
+            display: inline-block;
+            width:13px;
+            margin-left:5px;
+            margin-top:3px;
+            -webkit-filter:brightness(0);
+            
+            -webkit-transform: rotateX(3.142rad);
+        }
 
+        .active img{
+            -webkit-filter:brightness(1);
+        }
+
+
+        @media screen and (min-width: 1024px){
+            .coupon-test-item {
+                width: 25%;
+                display: inline-block;
+                vertical-align:top;
+                border:none;
+            }
+
+            .coupon-test-item label{
+                width: 100%;
+                display: block;
+                height: 24px;
+                border-right: 1px solid #cdcdcd;
+                margin-bottom: 10px;
+            }
+            .coupon-test-item-list .pill{
+                white-space: nowrap;
+                text-overflow:ellipsis;
+                padding: .25rem 1rem;
+                border-radius: 3rem;
+                display:inline-block;
+                margin-top: .25rem;
+                line-height: 21px;
+            }
+
+            .filter-container{
+                overflow:hidden;
+            }
+
+            label.toggle-filter-test img{
+                width: 27px;
+                margin-top: 0px;
+                border-right: 1px solid #cdcdcd;
+                padding: 12px 5px;
+                height: auto;
+            }
+
+            .coupon-test-item:nth-child(2){
+                margin-left:32px !important;
+                
+            }
+        }
         @media screen and (max-width:768px){
+            .toggle-filter-test{
+                display:none;
+            }
             div#coupon-header {
                 margin-top:40px;
             }
@@ -8308,23 +8378,31 @@
                                     <h2 class="title active">Voucher Lazada</h2>
                                     <div class="filter-wrapper">
 	                                    <div class="filter-container">
-											<div class="coupon-type">
+                                            <label for="" class="toggle-filter-test">
+                                                <img src="down-arrow.png" class="arrow" alt="">
+                                            </label>
+											<div class="coupon-type coupon-test-item">
 												<label for="">Coupon Type</label>
-												<span class="pill coup-type" data-attr="coupon-code">Code</span>
-												<span class="pill coup-type" data-attr="coupon-deals">Deals</span>
+                                                <div class="coupon-test-item-list">
+    												<span class="pill coup-type" data-attr="coupon-code">Code</span>
+    												<span class="pill coup-type" data-attr="coupon-deals">Deals</span>
+                                                </div>
 											</div>
-											<div class="coupon-categories">
+											<div class="coupon-categories coupon-test-item">
 												<label for="">Categories</label>
-												<span class="pill cat-categories" data-attr="electronics">Electronics</span>
-												<span class="pill cat-categories" data-attr="fashion">Fashion</span>
-												<span class="pill cat-categories" data-attr="beauty">Beauty &amp; Health</span>
-												<span class="pill cat-categories" data-attr="travels">Travels</span>
-												<span class="pill cat-categories" data-attr="sports">Sports</span>
-												<span class="pill cat-categories" data-attr="home">Home &amp; Living</span>
-												<span class="pill cat-categories" data-attr="food">Food &amp; Grocery</span>
+                                                <div class="coupon-test-item-list">
+    												<span class="pill cat-categories" data-attr="electronics">Electronics</span>
+    												<span class="pill cat-categories" data-attr="fashion">Fashion</span>
+    												<span class="pill cat-categories" data-attr="beauty">Beauty &amp; Health</span>
+    												<span class="pill cat-categories" data-attr="travels">Travels</span>
+    												<span class="pill cat-categories" data-attr="sports">Sports</span>
+    												<span class="pill cat-categories" data-attr="home">Home &amp; Living</span>
+    												<span class="pill cat-categories" data-attr="food">Food &amp; Grocery</span>
+                                                </div>
 											</div>
                                             <button class="show-results">Show Results</button>
 										</div>
+
 										<div class="below-filter">
 											<div class="filter-bucket">
 												
@@ -8333,9 +8411,12 @@
 											<div class="sort-container">
 												<label for="">Sort by:</label>
 												<div class="button-group">
-													<button class="btn-sort recommended active">Recommended</button>
+													<button class="btn-sort recommended active">Popular</button>
 													<button class="btn-sort btn-discount">Discount %</button>
-													<button class="btn-sort btn-expiry">Expiry Date</button>
+													<button class="btn-sort btn-expiry">
+                                                        Expired
+                                                        <img src="sort.svg" alt="">
+                                                    </button>
 												</div>
 											</div>
 										</div>
@@ -10515,7 +10596,8 @@
         </script>
         <script>
 			$(document).ready(function(){
-				var sort_exp = false;
+                var filter_open = true;
+				var sort_exp = false; // low to high
 				var type_selected = false;
 				var cat_selected = false;
 				var current = 'Recommended';
@@ -10592,6 +10674,22 @@
 
 				}
 
+                $('.toggle-filter-test').click(function(){
+                    if( filter_open){
+                        $('.filter-container').animate({
+                            height: '40px'
+                        }, 1000);
+                        filter_open = false;
+                        $('.arrow').css('transform', 'rotateX(3.142rad)');
+                    }else{
+                        $('.filter-container').animate({
+                            height: '178px'
+                        }, 1000);
+                        filter_open = true;
+                        $('.arrow').css('transform', 'rotateX(0)');
+                        
+                    }
+                })
 				function shuffleCat( type ){
 					$('.'+type).css('display', 'flex');
 					$('.all').css('display', 'flex');
@@ -10599,15 +10697,32 @@
 
 				$('.btn-sort').click(function(){
 					if( current == $(this).html()){
-
 						//do nothing
 						
 					}else{
 						$('.active').removeClass('active');
 						current = $(this).html();
 						$(this).addClass('active');
-
 					}
+
+                    if( $(this).hasClass('btn-expiry')){
+                        if( sort_exp ){
+                            $('.btn-expiry img').css('transform', 'rotateX(0)');
+                            sort_exp = false;
+                        }else{
+                            $('.btn-expiry img').css('transform', 'rotateX(3.142rad)');
+                            sort_exp = true;
+                        }
+                    }else{
+                        $('.btn-expiry img').css('transform', 'rotateX(3.142rad)');
+                        sort_exp = false;
+                    }
+                    var children = $('#coupon-list').children();
+                    $('#coupon-list').html('');
+                    for(i=29;i>=0;--i ){
+                        var child = children[i];
+                        $('#coupon-list').append(child);
+                    }
 				});
 
 				function initButton(){
@@ -10626,14 +10741,6 @@
 					});	
 				}
 
-				$('.btn-sort').click(function(){
-					var children = $('#coupon-list').children();
-					$('#coupon-list').html('');
-					for(i=29;i>=0;--i ){
-						var child = children[i];
-						$('#coupon-list').append(child);
-					}
-				});
 
                 if( $(window).width() < 768){
                     $('.btn-filter-mobile').click(function(){
